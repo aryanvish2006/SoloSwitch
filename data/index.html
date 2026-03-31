@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebControl</title>
+    <style>
+        .container{
+            background-color: aqua;
+        }
+        .btnContainer{
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .btn{
+            height: 80px;
+            margin: 10px;
+            border-radius: 30px;
+            border: none;
+        }
+        .timerContainer{
+            background-color: rgb(137, 123, 150);
+            display: flex;
+        }
+        #inp{
+            height: 40px;
+            border-radius: 30px;
+            border: none;
+            background-color: rgb(42, 71, 66);
+        }
+        #startBtn{
+        margin: 2%;
+            width: 95%;
+            border: none;
+            border-radius: 30px;
+            background-color: rgb(168, 50, 162);
+            height: 40px;
+        }
+        p{
+            font-size: 40px;
+            font-weight:600;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            margin-left: 30px;
+        }
+        #cancel{
+            border: none;
+            height: 30px;
+            width: 95%;
+            margin: 2%;
+            border-radius: 30px;
+            background-color: rgb(204, 44, 44);
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="btnContainer">
+            <button onclick="on()" style="background-color: rgb(44, 141, 44); color: white;" class="btn">ON</button>
+            <button onclick="off()" style="background-color: rgb(148, 38, 38); color:white" class="btn">OFF</button>
+        </div>
+        <div class="timerContainer">
+            <input id="inp" type="number" placeholder="Set Time">
+            <label>
+            <input class="radioInp" type="radio" name="state" value="1" checked>ON</label>
+            <label >
+            <input class="radioInp" type="radio" name="state" value="0">OFF</label>
+        </div>
+        <button id="startBtn" onclick="setTimer()">Set Timer</button>
+<p id="timeout">0000</p>
+<button id="cancel">Cancel Timer</button>
+
+    </div>
+
+<script>
+    function on(){
+        fetch("/on");
+    }
+    function off(){
+        fetch("/off");
+    }
+    function setTimer(){
+        let inp = document.getElementById("inp").value.trim();
+        let selected = document.querySelector('input[name="state"]:checked').value.trim();
+
+            if(inp =="" || selected ==""){ 
+                alert("Plese enter all values")
+                return;
+            }
+            fetch(`/timer?time=${inp}&state=${selected}`);
+            console.log(inp,selected);
+            return;
+    }
+
+    function updateTime(){
+        fetch("/getRemainingSec")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("timeout").innerText = data;
+        })
+    }
+
+    // setInterval(updateTime,1000);
+
+</script>
+</body>
+</html>
